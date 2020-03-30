@@ -8,7 +8,7 @@
     initialize: function(params) {
       if (_.isUndefined(params) || _.isNull(params)) {
         console.log(
-          'Good guess! But to use the Board() constructor, you must pass it an argument in one of the following formats:',
+          'Good guess! But to use the Board() constructor, you must pass it an argument in one of the following formats:'
         );
         console.log(
           '\t1. An object. To create an empty board of size n:\n\t\t{n: %c<num>%c} - Where %c<num> %cis the dimension of the (empty) board you wish to instantiate\n\t\t%cEXAMPLE: var board = new Board({n:5})',
@@ -16,7 +16,7 @@
           'color: black;',
           'color: blue;',
           'color: black;',
-          'color: grey;',
+          'color: grey;'
         );
         console.log(
           '\t2. An array of arrays (a matrix). To create a populated board of size n:\n\t\t[ [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...], [%c<val>%c,%c<val>%c,%c<val>%c...] ] - Where each %c<val>%c is whatever value you want at that location on the board\n\t\t%cEXAMPLE: var board = new Board([[1,0,0],[0,1,0],[0,0,1]])',
@@ -40,7 +40,7 @@
           'color: black;',
           'color: blue;',
           'color: black;',
-          'color: grey;',
+          'color: grey;'
         );
       } else if (params.hasOwnProperty('n')) {
         this.set(makeEmptyMatrix(this.get('n')));
@@ -71,7 +71,8 @@
     },
 
     // 특정 좌표가 주어졌을 때, 해당 좌표를 지나는 주대각선의 첫 번째 행 컬럼을 반환합니다.
-    // ex) rowIndex: 1, colIndex: 0이 주어졌을 때 -1 반환
+    // ex) rowIndex: 1, colIndex: 0이 주어졌을 때 -1 반환 2-3
+    // column 을 받아서 row+1 col +1
     //          -1 0 1 2 3 4
     // ----------------------
     //       0   1[0,0,0,0]
@@ -115,10 +116,10 @@
         this.hasRowConflictAt(rowIndex) ||
         this.hasColConflictAt(colIndex) ||
         this.hasMajorDiagonalConflictAt(
-          this._getFirstRowColumnIndexForMajorDiagonalOn(rowIndex, colIndex),
+          this._getFirstRowColumnIndexForMajorDiagonalOn(rowIndex, colIndex)
         ) ||
         this.hasMinorDiagonalConflictAt(
-          this._getFirstRowColumnIndexForMinorDiagonalOn(rowIndex, colIndex),
+          this._getFirstRowColumnIndexForMinorDiagonalOn(rowIndex, colIndex)
         )
       );
     },
@@ -136,7 +137,7 @@
 
     /*
          _             _     _
-     ___| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
+    _ __| |_ __ _ _ __| |_  | |__   ___ _ __ ___ _
     / __| __/ _` | '__| __| | '_ \ / _ \ '__/ _ (_)
     \__ \ || (_| | |  | |_  | | | |  __/ | |  __/_
     |___/\__\__,_|_|   \__| |_| |_|\___|_|  \___(_)
@@ -151,11 +152,25 @@
     //
     // 주어진 행(rowIndex)에 충돌하는 말이 있는지 확인합니다.
     hasRowConflictAt: function(rowIndex) {
-      return false; // fixme
+      let matrix = this.rows();
+      let temp = 0;
+      for (let i = 0; i < matrix[rowIndex].length; i++) {
+        temp += matrix[rowIndex][i];
+      }
+      if (temp > 1) {
+        return true;
+      }
+      return false;
     },
 
     // 체스 판 위에 행 충돌이 하나라도 있는지 검사합니다.
     hasAnyRowConflicts: function() {
+      let matrix = this.rows();
+      for (let i = 0; i < matrix.length; i++) {
+        if (this.hasRowConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -164,11 +179,25 @@
     //
     // 주어진 열(colIndex)에 충돌하는 말이 있는지 확인합니다.
     hasColConflictAt: function(colIndex) {
-      return false; // fixme
+      let matrix = this.rows();
+      let temp = 0;
+      for (let i = 0; i < matrix.length; i++) {
+        temp += matrix[i][colIndex];
+      }
+      if (temp > 1) {
+        return true;
+      }
+      return false;
     },
 
     // 체스 판 위에 열 충돌이 하나라도 있는지 검사합니다.
     hasAnyColConflicts: function() {
+      let matrix = this.rows();
+      for (let i = 0; i < matrix.length; i++) {
+        if (this.hasColConflictAt(i)) {
+          return true;
+        }
+      }
       return false; // fixme
     },
 
@@ -176,13 +205,37 @@
     // --------------------------------------------------------------
     //
     // 주어진 주대각선에 충돌하는 말이 있는지 확인합니다.
+    // [
+    //   [0,1,1,0],
+    //   [0,1,1,0],
+    //   [0,1,1,0],
+    //   [0,1,1,0],
+    // ]
     hasMajorDiagonalConflictAt: function(majorDiagonalColumnIndexAtFirstRow) {
+      let matrix = this.rows();
+      let temp = 0;
+      for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < matrix[i].length; j++) {
+          if (i - j === majorDiagonalColumnIndexAtFirstRow) {
+            temp += matrix[j][i];
+          }
+        }
+      }
+      if (temp > 1) {
+        return true;
+      }
       return false; // fixme
     },
 
     // 체스 판 위에 주대각선 충돌이 하나라도 있는지 검사합니다.
     hasAnyMajorDiagonalConflicts: function() {
-      return false; // fixme
+      let matrix = this.rows();
+      for (let i = -matrix.length + 1; i < matrix.length; i++) {
+        if (this.hasMajorDiagonalConflictAt(i)) {
+          return true;
+        }
+      }
+      return false;
     },
 
     // Minor Diagonals - go from top-right to bottom-left
@@ -196,7 +249,7 @@
     // 체스 판 위에 반대각선 충돌이 하나라도 있는지 검사합니다.
     hasAnyMinorDiagonalConflicts: function() {
       return false; // fixme
-    },
+    }
 
     /* --------------------  End of Helper Functions  --------------------- */
   });
