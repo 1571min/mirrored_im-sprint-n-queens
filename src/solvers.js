@@ -13,19 +13,48 @@
 // n이 주어졌을 때 n rooks 문제의 해답 한 개를 반환합니다.
 // 반환 값은 체스 판을 나타내는 2차원 배열입니다.
 window.findNRooksSolution = function(n) {
-  var solution = undefined; // fixme
-
-  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(solution));
-  return solution;
+  let board = new Board({n : n})
+  let matrix = board.rows();
+  for(let i = 0 ; i < matrix.length ; i++){
+    for(let j = 0 ; j < matrix.length ; j++){
+      board.togglePiece(i, j)
+      if(board.hasAnyRooksConflicts()){
+        board.togglePiece(i,j)
+      }
+    }
+  }
+  console.log('Single solution for ' + n + ' rooks:', JSON.stringify(matrix));
+  return matrix;
 };
 
 // n이 주어졌을 때 n rooks 문제의 전체 해답 개수를 반환합니다.
 // 반환 값은 정수입니다.
 window.countNRooksSolutions = function(n) {
-  var solutionCount = undefined; // fixme
+  let board = new Board({n : n})
+  let count = 0;
+  let arr = [];
+  const recursion = (rowIndex, checkIndex) => {
+    if(rowIndex === n){
+      count++
+      return count
+    }
+    for(let i = 0; i < n ; i++){
+      if(board._isInBounds(rowIndex, i)){
+        board.togglePiece(rowIndex, i);
+        if(!board.hasAnyRooksConflicts()){
+          if(!arr.includes(i)){
+            arr.push(i);
+            recursion(rowIndex + 1, arr)
+          }
+        }
+        board.togglePiece(rowIndex, i)
+      }
+    }
+  }
+  recursion(0, arr)
+  return count;
 
-  console.log('Number of solutions for ' + n + ' rooks:', solutionCount);
-  return solutionCount;
+  console.log('Number of solutions for ' + n + ' rooks:', count);
 };
 
 // n이 주어졌을 때 n queens 문제의 해답 한 개를 반환합니다.

@@ -243,12 +243,30 @@
     //
     // 주어진 반대각선에 충돌하는 말이 있는지 확인합니다.
     hasMinorDiagonalConflictAt: function(minorDiagonalColumnIndexAtFirstRow) {
+      let matrix = this.rows();
+      let temp = 0;
+      for(let i = 0; i<matrix.length; i++){
+        for(let j = 0; j< matrix[i].length;j++){
+          if(i+j === minorDiagonalColumnIndexAtFirstRow){
+            temp += matrix[j][i]
+          }
+        }
+      }
+      if (temp > 1){
+        return true;
+      }
       return false; // fixme
     },
 
     // 체스 판 위에 반대각선 충돌이 하나라도 있는지 검사합니다.
     hasAnyMinorDiagonalConflicts: function() {
-      return false; // fixme
+      let matrix = this.rows();
+      for(let i = 0; i<((matrix.length*2)-1);i++){
+        if(this.hasMinorDiagonalConflictAt(i)){
+          return true;
+        }
+      }
+      return false;
     }
 
     /* --------------------  End of Helper Functions  --------------------- */
