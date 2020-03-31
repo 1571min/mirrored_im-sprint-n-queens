@@ -76,27 +76,31 @@ window.countNRooksSolutions = function(n) {
 
 // n이 주어졌을 때 n queens 문제의 해답 한 개를 반환합니다.
 // 반환 값은 체스 판을 나타내는 2차원 배열입니다.
-window.findNQueensSolution = function(n) {
-  let board = new Board({ n: n });
+window.findNQueensSolution = function (n) {
+  let board = new Board({ 'n': n });
+  let solution = undefined; // fixme
 
-  let recursion = function(rowIndex, colIndex, board) {
-    //탈출 조건
-    if (rowIndex === colIndex) {
-      return;
+  if (n === 2 || n === 3) {
+    return board.rows();
+  }
+  function recursion(rowIndex){
+    if(rowIndex === n){
+      solution = board.rows();
+      return
     }
-    //재귀 호출
-    for (let i = 0; i < colIndex; i++) {
-      if (board._isInBounds(rowIndex, i)) {
-        board.togglePiece(rowIndex, i);
-        if (!board.hasAnyQueensConflicts()) {
-          recursion(rowIndex + 1, colIndex, board);
-        }
-        board.togglePiece(rowIndex, i);
+    for(let i = 0; i < n; i++){
+      board.togglePiece(rowIndex, i)
+      if(!board.hasAnyQueensConflicts()){
+        recursion(rowIndex+1);
       }
+      if(solution){
+        break;
+      }
+      board.togglePiece(rowIndex, i)
     }
-  };
-  recursion(0, n, board);
-  return board.rows();
+  }
+  recursion(0)
+  return solution
 };
 
 function countingTogle(matrix) {
@@ -114,8 +118,45 @@ function countingTogle(matrix) {
 // n이 주어졌을 때 n queens 문제의 전체 해답 개수를 반환합니다.
 // 반환 값은 정수입니다.
 window.countNQueensSolutions = function(n) {
-  var solutionCount = undefined; // fixme
-
-  console.log('Number of solutions for ' + n + ' queens:', solutionCount);
-  return solutionCount;
+  let board = new Board({ n: n });
+  let count = 0;
+  const recursion = (
+      rowIndex,
+      checkIndex1,
+      checkIndex2,
+      checkIndex3,
+      checkIndex4,
+      checkIndex5
+  ) => {
+    if (rowIndex === n) {
+      count++;
+      return count;
+    }
+    for (let i = 0; i < n; i++) {
+      if (
+          checkIndex1 !== i &&
+          checkIndex2 !== i &&
+          checkIndex3 !== i &&
+          checkIndex4 !== i &&
+          checkIndex5 !== i
+      ) {
+        if (board._isInBounds(rowIndex, i)) {
+          board.togglePiece(rowIndex, i);
+          if (!board.hasAnyQueensConflicts()) {
+            recursion(
+                rowIndex + 1,
+                checkIndex2,
+                checkIndex3,
+                checkIndex4,
+                checkIndex5,
+                i
+            );
+          }
+          board.togglePiece(rowIndex, i);
+        }
+      }
+    }
+  };
+  recursion(0);
+  return count;
 };
