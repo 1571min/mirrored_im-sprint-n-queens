@@ -33,74 +33,56 @@ window.findNRooksSolution = function(n) {
 window.countNRooksSolutions = function(n) {
   let board = new Board({ n: n });
   let count = 0;
-  const recursion = (
-    rowIndex,
-    checkIndex1,
-    checkIndex2,
-    checkIndex3,
-    checkIndex4,
-    checkIndex5
-  ) => {
+  let isTogglArr = Array(n).fill(0);
+  const recursion = (rowIndex, isTogglArr) => {
     if (rowIndex === n) {
       count++;
-      return count;
+      return;
     }
     for (let i = 0; i < n; i++) {
-      if (
-        checkIndex1 !== i &&
-        checkIndex2 !== i &&
-        checkIndex3 !== i &&
-        checkIndex4 !== i &&
-        checkIndex5 !== i
-      ) {
-        if (board._isInBounds(rowIndex, i)) {
-          board.togglePiece(rowIndex, i);
-          if (!board.hasAnyRooksConflicts()) {
-            recursion(
-              rowIndex + 1,
-              checkIndex2,
-              checkIndex3,
-              checkIndex4,
-              checkIndex5,
-              i
-            );
-          }
-          board.togglePiece(rowIndex, i);
+      if (isTogglArr[i] !== 1) {
+        board.togglePiece(rowIndex, i);
+        if (!board.hasAnyRooksConflicts()) {
+          isTogglArr[i] = 1;
+          let newArr = JSON.parse(JSON.stringify(isTogglArr));
+          recursion(rowIndex + 1, newArr);
         }
+        isTogglArr[i] = 0;
+        board.togglePiece(rowIndex, i);
       }
     }
   };
-  recursion(0);
+  recursion(0, isTogglArr);
   return count;
 };
 
 // n이 주어졌을 때 n queens 문제의 해답 한 개를 반환합니다.
 // 반환 값은 체스 판을 나타내는 2차원 배열입니다.
-window.findNQueensSolution = function (n) {
-  let board = new Board({ 'n': n });
+window.findNQueensSolution = function(n) {
+  let board = new Board({ n: n });
   let solution = undefined; // fixme
 
   if (n === 2 || n === 3) {
     return board.rows();
   }
-  function recursion(rowIndex){
-    if(rowIndex === n){
+  function recursion(rowIndex) {
+    if (rowIndex === n) {
       solution = board.rows();
-      return
+      return;
     }
-    for(let i = 0; i < n; i++){
-      board.togglePiece(rowIndex, i)
-      if(!board.hasAnyQueensConflicts()){
-        recursion(rowIndex+1);
+    for (let i = 0; i < n; i++) {
+      board.togglePiece(rowIndex, i);
+      if (!board.hasAnyQueensConflicts()) {
+        recursion(rowIndex + 1);
       }
-      if(solution){
+      if (solution) {
         break;
       }
-      board.togglePiece(rowIndex, i)
+      board.togglePiece(rowIndex, i);
     }
   }
-  recursion(0)
-  return solution
+  recursion(0);
+  return solution;
 };
 
 function countingTogle(matrix) {
@@ -120,43 +102,25 @@ function countingTogle(matrix) {
 window.countNQueensSolutions = function(n) {
   let board = new Board({ n: n });
   let count = 0;
-  const recursion = (
-      rowIndex,
-      checkIndex1,
-      checkIndex2,
-      checkIndex3,
-      checkIndex4,
-      checkIndex5
-  ) => {
+  let isTogglArr = Array(n).fill(0);
+  const recursion = (rowIndex, isTogglArr) => {
     if (rowIndex === n) {
       count++;
-      return count;
+      return;
     }
     for (let i = 0; i < n; i++) {
-      if (
-          checkIndex1 !== i &&
-          checkIndex2 !== i &&
-          checkIndex3 !== i &&
-          checkIndex4 !== i &&
-          checkIndex5 !== i
-      ) {
-        if (board._isInBounds(rowIndex, i)) {
-          board.togglePiece(rowIndex, i);
-          if (!board.hasAnyQueensConflicts()) {
-            recursion(
-                rowIndex + 1,
-                checkIndex2,
-                checkIndex3,
-                checkIndex4,
-                checkIndex5,
-                i
-            );
-          }
-          board.togglePiece(rowIndex, i);
+      if (isTogglArr[i] !== 1) {
+        board.togglePiece(rowIndex, i);
+        if (!board.hasAnyQueensConflicts()) {
+          isTogglArr[i] = 1;
+          let newArr = JSON.parse(JSON.stringify(isTogglArr));
+          recursion(rowIndex + 1, newArr);
         }
+        isTogglArr[i] = 0;
+        board.togglePiece(rowIndex, i);
       }
     }
   };
-  recursion(0);
+  recursion(0, isTogglArr);
   return count;
 };
