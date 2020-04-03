@@ -34,25 +34,23 @@ window.countNRooksSolutions = function(n) {
   let board = new Board({ n: n });
   let count = 0;
   let isTogglArr = Array(n).fill(0);
-  const recursion = (rowIndex, isTogglArr) => {
+  const recursion = rowIndex => {
     if (rowIndex === n) {
-      count++;
-      return;
+      return count++;
     }
     for (let i = 0; i < n; i++) {
       if (isTogglArr[i] !== 1) {
         board.togglePiece(rowIndex, i);
         if (!board.hasAnyRooksConflicts()) {
           isTogglArr[i] = 1;
-          let newArr = JSON.parse(JSON.stringify(isTogglArr));
-          recursion(rowIndex + 1, newArr);
+          recursion(rowIndex + 1);
         }
         isTogglArr[i] = 0;
         board.togglePiece(rowIndex, i);
       }
     }
   };
-  recursion(0, isTogglArr);
+  recursion(0);
   return count;
 };
 
@@ -103,24 +101,22 @@ window.countNQueensSolutions = function(n) {
   let board = new Board({ n: n });
   let count = 0;
   let isTogglArr = Array(n).fill(0);
-  const recursion = (rowIndex, isTogglArr) => {
+  const recursion = rowIndex => {
     if (rowIndex === n) {
-      count++;
-      return;
+      return count++;
     }
     for (let i = 0; i < n; i++) {
       if (isTogglArr[i] !== 1) {
         board.togglePiece(rowIndex, i);
         if (!board.hasAnyQueensConflicts()) {
           isTogglArr[i] = 1;
-          let newArr = JSON.parse(JSON.stringify(isTogglArr));
-          recursion(rowIndex + 1, newArr);
+          recursion(rowIndex + 1);
         }
         isTogglArr[i] = 0;
         board.togglePiece(rowIndex, i);
       }
     }
   };
-  recursion(0, isTogglArr);
+  recursion(0);
   return count;
 };
